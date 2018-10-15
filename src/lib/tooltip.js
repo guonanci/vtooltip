@@ -175,9 +175,28 @@ export default class Tooltip {
           if (options.loadingContent) {
             this._applyContent(options.loadingContent, options)
           }
-          result.then(asyncResult => )
+          result.then(asyncResult => {
+            options.loadingClass && removeClasses(rootNode, options.loadingClass)
+            return this._applyContent(asyncResult, options)
+          }).then(resolve).catch(reject)
+        } else {
+          this._applyContent(result, options)
+            .then(resolve).catch(reject)
         }
+        return
+      } else {
+        allowHtml ? (titleNode.innerHTML = title) : (title.innerText = title)
       }
+      resolve()
     })
+  }
+
+  _show (reference, options) {
+    if (options && typeof options.container === 'string') {
+      const container = document.querySelector(options.container)
+      if (!container) return
+    }
+
+    clearTimeout(this._disposeTimer)
   }
 }
